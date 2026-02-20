@@ -42,3 +42,9 @@ Type a task into the input field and click the Add button. The task will immedia
 Marking Tasks as Completed:
 Click the Done button (or task item, depending on implementation) to mark it as completed. The task will display a line-through effect to indicate completion.
 This fully client-side application runs directly in the browser and provides a simple yet effective way to manage everyday tasks.
+
+Example Screenshot
+---
+<img width="600" height="600" alt="Screenshot 2026-02-20 194925" src="https://github.com/user-attachments/assets/97d2a34d-cc53-4a1f-b5af-f243d34715a8" />
+
+Enjoy Playing!!

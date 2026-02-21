@@ -19,11 +19,11 @@ document.getElementById("addBtn").addEventListener("click", function() {
     // BUG 2: wrong text usage
     let span = document.createElement("span");
     span.classList.add("todo-text");
-    span.innerText = task.label; // ❌ task is string, not object
+    span.innerText = task;
 
     // complete toggle
     checkbox.addEventListener("change", function() {
-        li.classList.toggel("completed"); // ❌ typo
+        li.classList.toggle("completed"); 
     });
 
     // edit on double click

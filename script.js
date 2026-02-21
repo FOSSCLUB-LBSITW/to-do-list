@@ -1,4 +1,5 @@
-const list = document.getElementById("todoList");
+const list = document.getElementById("activeList");
+const completedList = document.getElementById("completedList");
 const inputField = document.getElementById("todoInput");
 
 // Helper: close all open control panels
@@ -17,7 +18,13 @@ function createTodoItem(taskText) {
     let checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.addEventListener("change", function () {
-        li.classList.toggle("completed");
+    if (checkbox.checked) {
+        li.classList.add("completed");
+        completedList.appendChild(li);   // move to completed section
+    } else {
+        li.classList.remove("completed");
+        list.appendChild(li);            // move back to active section
+    }
     });
 
     // Task text (visible normally)
@@ -57,18 +64,20 @@ function createTodoItem(taskText) {
     let up = document.createElement("span");
     up.innerHTML = "⬆";
     up.addEventListener("click", function (e) {
-        e.stopPropagation();
-        let prev = li.previousElementSibling;
-        if (prev) list.insertBefore(li, prev);
+    e.stopPropagation();
+    let prev = li.previousElementSibling;
+    if (prev) li.parentNode.insertBefore(li, prev);
     });
+
 
     let down = document.createElement("span");
     down.innerHTML = "⬇";
     down.addEventListener("click", function (e) {
-        e.stopPropagation();
-        let next = li.nextElementSibling;
-        if (next) list.insertBefore(next, li);
+    e.stopPropagation();
+    let next = li.nextElementSibling;
+    if (next) li.parentNode.insertBefore(next, li);
     });
+
 
     let del = document.createElement("span");
     del.innerHTML = "❌";

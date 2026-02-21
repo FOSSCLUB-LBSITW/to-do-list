@@ -72,10 +72,14 @@ function createTodoItem(taskText) {
 
     let del = document.createElement("span");
     del.innerHTML = "❌";
-    del.addEventListener("click", function (e) {
-        e.stopPropagation();
+    // ❌ Delete with confirmation
+del.addEventListener("click", function (e) {
+    e.stopPropagation();
+    const confirmDelete = confirm("Are you sure you want to delete this task?");
+    if (confirmDelete) {
         li.remove();
-    });
+    }
+});
 
     controls.appendChild(up);
     controls.appendChild(down);

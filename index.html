@@ -11,11 +11,23 @@
     <header>
       <h1><span>✅</span> <span class="logo">TODO LIST</span></h1>
     </header>
+
     <div class="input-area">
       <input type="text" id="todoInput" placeholder="What needs to be done?">
       <button id="addBtn">+</button>
     </div>
-    <ul id="todoList"></ul>
+
+    <!-- Active Section -->
+    <div class="section">
+      <h2>Active Tasks</h2>
+      <ul id="activeList"></ul>
+    </div>
+
+    <!-- Completed Section -->
+    <div class="section">
+      <h2>Completed Tasks</h2>
+      <ul id="completedList"></ul>
+    </div>
   </div>
 
   <script src="script.js"></script>

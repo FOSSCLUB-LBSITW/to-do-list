@@ -1,6 +1,58 @@
 const list = document.getElementById("activeList");
 const completedList = document.getElementById("completedList");
 const inputField = document.getElementById("todoInput");
+const categoryInput = document.getElementById("categoryInput");
+const priorityInput = document.getElementById("priorityInput");
+
+// Save all tasks to localStorage
+function saveTasks() {
+    const activeTasks = [];
+    document.querySelectorAll('#activeList .todo-item').forEach(li => {
+        activeTasks.push({
+            text: li.querySelector('.todo-text').innerText,
+            category: li.dataset.category,
+            priority: li.dataset.priority
+        });
+    });
+
+    const completedTasks = [];
+    document.querySelectorAll('#completedList .todo-item').forEach(li => {
+        completedTasks.push({
+            text: li.querySelector('.todo-text').innerText,
+            category: li.dataset.category,
+            priority: li.dataset.priority
+        });
+    });
+
+    localStorage.setItem('activeTasks', JSON.stringify(activeTasks));
+    localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+}
+
+// Load tasks from localStorage on page load
+function loadTasks() {
+    let activeTasks = JSON.parse(localStorage.getItem('activeTasks')) || [];
+    let completedTasks = JSON.parse(localStorage.getItem('completedTasks')) || [];
+
+    // Helper to normalize task data (handle legacy string-only tasks)
+    const normalize = t => typeof t === 'string' ? { text: t, category: 'Personal', priority: 'Low' } : t;
+
+    // Sort active tasks by priority: High(3) > Medium(2) > Low(1)
+    const pVal = { 'High': 3, 'Medium': 2, 'Low': 1 };
+    activeTasks = activeTasks.map(normalize).sort((a, b) => (pVal[b.priority] || 0) - (pVal[a.priority] || 0));
+    completedTasks = completedTasks.map(normalize);
+
+    activeTasks.forEach(task => {
+        const newItem = createTodoItem(task.text, task.category, task.priority);
+        list.appendChild(newItem);
+    });
+
+    completedTasks.forEach(task => {
+        const newItem = createTodoItem(task.text, task.category, task.priority);
+        newItem.querySelector('input[type="checkbox"]').checked = true;
+        newItem.classList.add('completed');
+        completedList.appendChild(newItem);
+    });
+}
 
 // Save all tasks to localStorage
 function saveTasks() {
@@ -44,9 +96,11 @@ function closeAllControls() {
 }
 
 // Create a new to-do item
-function createTodoItem(taskText) {
+function createTodoItem(taskText, category = 'Personal', priority = 'Low') {
     let li = document.createElement("li");
     li.classList.add("todo-item");
+    li.dataset.category = category;
+    li.dataset.priority = priority;
 
     // Checkbox
     let checkbox = document.createElement("input");
@@ -66,6 +120,21 @@ function createTodoItem(taskText) {
     let span = document.createElement("span");
     span.classList.add("todo-text");
     span.innerText = taskText;
+
+    // Category and Priority Badges
+    let infoDiv = document.createElement("div");
+    infoDiv.classList.add("task-info");
+    
+    let catBadge = document.createElement("span");
+    catBadge.className = "badge category-tag";
+    catBadge.innerText = category;
+    
+    let priBadge = document.createElement("span");
+    priBadge.className = `badge priority-${priority.toLowerCase()}`;
+    priBadge.innerText = priority;
+
+    infoDiv.appendChild(catBadge);
+    infoDiv.appendChild(priBadge);
 
     // Drag handle (≡) – toggles the up/down/delete panel
     let drag = document.createElement("span");
@@ -135,6 +204,7 @@ del.addEventListener("click", function (e) {
     // Assemble the item
     li.appendChild(checkbox);
     li.appendChild(span);
+    li.appendChild(infoDiv);
     li.appendChild(drag);
     li.appendChild(editBtn);
     li.appendChild(controls);
@@ -226,7 +296,9 @@ document.getElementById("addBtn").addEventListener("click", function () {
         alert("Task can't be empty!");
         return;
     }
-    let newItem = createTodoItem(task);
+    let category = categoryInput.value;
+    let priority = priorityInput.value;
+    let newItem = createTodoItem(task, category, priority);
     list.appendChild(newItem);
     inputField.value = "";
     saveTasks();

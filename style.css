@@ -1,28 +1,27 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 
   /* Remove flex completely */
-  
+
   /* notebook background */
   background: repeating-linear-gradient(
-    to bottom,
-    #fefefe,
-    #fefefe 28px,
-    #d0ebff 29px
-  ),
-  linear-gradient(to right, #fdfdfd, #fefefe);
+      to bottom,
+      #fefefe,
+      #fefefe 28px,
+      #d0ebff 29px
+    ),
+    linear-gradient(to right, #fdfdfd, #fefefe);
 
   background-size: 100% 30px;
   background-attachment: fixed;
 }
 
-
 .app {
   width: 100%;
   max-width: 600px;
-  margin: 60px auto;   /* centers horizontally + pushes down */
+  margin: 60px auto; /* centers horizontally + pushes down */
 }
 
 header {
@@ -77,109 +76,115 @@ header h1 {
   background: #689f38;
 }
 .todo-item {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 .drag-handle {
-    cursor: pointer;
-    font-weight: bold;
-    margin-right: 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  margin-right: 1rem;
 }
 .controls {
-    display: none;
-    position: absolute;
-    right: 10px;
-    background: white;
-    border: 1px solid #ccc;
-    padding: 5px;
-    border-radius: 5px;
+  display: none;
+  position: absolute;
+  right: 10px;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 5px;
+  border-radius: 5px;
 }
 .controls span {
-    margin: 0 5px;
-    cursor: pointer;
+  margin: 0 5px;
+  cursor: pointer;
 }
 .show-controls {
-    display: inline-block;
+  display: inline-block;
 }
 .edit-btn {
-    cursor: pointer;
-    margin-left: 5px;
-    font-size: 1.2rem;
+  cursor: pointer;
+  margin-left: 5px;
+  font-size: 1.2rem;
 }
 .edit-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
 }
 .edit-input {
-    flex: 1;
-    padding: 6px 10px;
-    border: 2px solid #4caf50;
-    border-radius: 4px;
-    font-size: 1rem;
+  flex: 1;
+  padding: 6px 10px;
+  border: 2px solid #4caf50;
+  border-radius: 4px;
+  font-size: 1rem;
 }
 .save-btn,
 .cancel-btn {
-    cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    white-space: nowrap;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  white-space: nowrap;
 }
 .save-btn {
-    background: #4caf50;
-    color: white;
+  background: #4caf50;
+  color: white;
 }
 .cancel-btn {
-    background: #f44336;
-    color: white;
+  background: #f44336;
+  color: white;
 }
 .save-btn:hover {
-    background: #45a049;
+  background: #45a049;
 }
 .cancel-btn:hover {
-    background: #da190b;
+  background: #da190b;
 }
 .todo-item {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px;
-    background: rgba(255, 255, 255, 0.8);
-    margin: 4px 0;
-    border-radius: 4px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.8);
+  margin: 4px 0;
+  border-radius: 4px;
 }
 .task-info {
-    display: flex;
-    gap: 5px;
-    margin-right: 10px;
+  display: flex;
+  gap: 5px;
+  margin-right: 10px;
 }
 .badge {
-    padding: 2px 6px;
-    border-radius: 4px;
-    color: white;
-    font-size: 0.75rem;
-    font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
 }
-.priority-high { background-color: #ff5252; }
-.priority-medium { background-color: #fb8c00; }
-.priority-low { background-color: #4caf50; }
+.priority-high {
+  background-color: #ff5252;
+}
+.priority-medium {
+  background-color: #fb8c00;
+}
+.priority-low {
+  background-color: #4caf50;
+}
 .category-tag {
-    background-color: #607d8b;
-    color: white;
+  background-color: #607d8b;
+  color: white;
 }
 .todo-text {
-    flex: 1;
-    cursor: text;
+  flex: 1;
+  cursor: text;
 }
 .drag-handle {
-    cursor: pointer;
-    font-weight: bold;
-    margin-right: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-right: 5px;
 }
 
 .completed {
@@ -193,11 +198,10 @@ header h1 {
   transition: 0.3s ease;
 }
 
-.active{
-    background-color: #45a049;
-    border-radius: 4px;
+.active {
+  background-color: #45a049;
+  border-radius: 4px;
 }
-
 
 h2 {
   font-size: 1.2rem;
@@ -234,7 +238,7 @@ h2 {
   border: 1px solid #ddd;
   padding: 5px 8px;
   border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .controls span {
@@ -246,4 +250,24 @@ h2 {
 
 .controls span:hover {
   color: #4caf50;
+}
+
+#deleteActiveBtn,
+#deleteCompletedBtn {
+  background-color: #da190b;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+#deleteActiveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#deleteCompletedBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

@@ -23,6 +23,10 @@ function notify(title, body) {
 }
 
 function populateTimeDropdowns() {
+    hoursInput.innerHTML = '';
+    minutesInput.innerHTML = '';
+    secondsInput.innerHTML = '';
+
     for (let i = 0; i < 24; i++) {
         const option = document.createElement("option");
         option.value = i;
@@ -30,11 +34,15 @@ function populateTimeDropdowns() {
         hoursInput.appendChild(option);
     }
     for (let i = 0; i < 60; i++) {
-        const option = document.createElement("option");
-        option.value = i;
-        option.innerText = i.toString().padStart(2, '0') + "m";
-        minutesInput.appendChild(option.cloneNode(true));
-        secondsInput.appendChild(option);
+        const minOption = document.createElement("option");
+        minOption.value = i;
+        minOption.innerText = i.toString().padStart(2, '0') + "m";
+        minutesInput.appendChild(minOption);
+
+        const secOption = document.createElement("option");
+        secOption.value = i;
+        secOption.innerText = i.toString().padStart(2, '0') + "s";
+        secondsInput.appendChild(secOption);
     }
 }
 
@@ -92,11 +100,13 @@ function createTodoItem(text, category, priority, deadline, duration, id = Date.
   const textSpan = document.createElement("div");
   textSpan.className = "todo-text";
   textSpan.innerText = text;
+  li.appendChild(textSpan);
 
-  const deadlineSpan = document.createElement("div");
-  deadlineSpan.className = "deadline";
   if (deadline) {
-    deadlineSpan.innerText = "Due: " + new Date(deadline).toLocaleString();
+      const deadlineSpan = document.createElement("div");
+      deadlineSpan.className = "deadline";
+      deadlineSpan.innerText = "Due: " + new Date(deadline).toLocaleString();
+      li.appendChild(deadlineSpan);
   }
 
   const details = document.createElement("div");
@@ -105,111 +115,98 @@ function createTodoItem(text, category, priority, deadline, duration, id = Date.
     <span class="category">${category}</span>
     <span class="priority">${priority}</span>
   `;
+  li.appendChild(details);
 
-  const timerContainer = document.createElement("div");
-  timerContainer.className = "timer-container";
+  const durationNum = parseInt(duration);
+  if (durationNum > 0) {
+      const timerContainer = document.createElement("div");
+      timerContainer.className = "timer-container";
 
-  const timerDisplay = document.createElement("span");
-  timerDisplay.className = "timer-display";
+      const timerDisplay = document.createElement("span");
+      timerDisplay.className = "timer-display";
 
-  let remaining = parseInt(li.dataset.timeLeft);
+      let remaining = parseInt(li.dataset.timeLeft);
 
-  function updateDisplay() {
-    const hours = Math.floor(remaining / 3600);
-    const minutes = Math.floor((remaining % 3600) / 60);
-    const seconds = remaining % 60;
-    timerDisplay.innerText = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      function updateDisplay() {
+        const hours = Math.floor(remaining / 3600);
+        const minutes = Math.floor((remaining % 3600) / 60);
+        const seconds = remaining % 60;
+        timerDisplay.innerText = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }
+
+      updateDisplay();
+
+      const startBtn = document.createElement("button");
+      startBtn.innerText = "▶";
+
+      const pauseBtn = document.createElement("button");
+      pauseBtn.innerText = "⏸";
+      pauseBtn.style.display = "none";
+
+      const resetBtn = document.createElement("button");
+      resetBtn.innerText = "🔄";
+      resetBtn.style.display = "none";
+
+      timerContainer.append(startBtn, pauseBtn, resetBtn, timerDisplay);
+      li.appendChild(timerContainer);
+
+      function stopTimer() {
+          clearInterval(activeTimers[id]);
+          delete activeTimers[id];
+      }
+
+      startBtn.addEventListener("click", () => {
+        if (activeTimers[id]) return;
+
+        activeTimers[id] = setInterval(() => {
+          if (remaining > 0) {
+            remaining--;
+            li.dataset.timeLeft = remaining;
+            updateDisplay();
+          } else {
+            stopTimer();
+            notify("Timer Finished!", text);
+          }
+        }, 1000);
+
+        startBtn.style.display = "none";
+        pauseBtn.style.display = "inline-block";
+        resetBtn.style.display = "inline-block";
+      });
+
+      pauseBtn.addEventListener("click", () => {
+        stopTimer();
+        startBtn.style.display = "inline-block";
+        pauseBtn.style.display = "none";
+      });
+
+      resetBtn.addEventListener("click", () => {
+        stopTimer();
+        remaining = parseInt(duration);
+        li.dataset.timeLeft = remaining;
+        updateDisplay();
+
+        startBtn.style.display = "inline-block";
+        pauseBtn.style.display = "none";
+        resetBtn.style.display = "none";
+      });
   }
 
-  updateDisplay();
-
-  const startBtn = document.createElement("button");
-  startBtn.innerText = "▶";
-  if (!duration || duration === "0") startBtn.style.display = "none";
-
-  const pauseBtn = document.createElement("button");
-  pauseBtn.innerText = "⏸";
-  pauseBtn.style.display = "none";
-
-  const resetBtn = document.createElement("button");
-  resetBtn.innerText = "🔄";
-  resetBtn.style.display = "none";
-
-  timerContainer.append(startBtn, pauseBtn, resetBtn, timerDisplay);
-
+  const buttonContainer = document.createElement("div");
+  buttonContainer.className = "button-container";
+  
   const completeBtn = document.createElement("button");
   completeBtn.className = "complete-btn";
   completeBtn.innerText = "Complete";
+  buttonContainer.appendChild(completeBtn)
+
 
   const deleteBtn = document.createElement("button");
   deleteBtn.className = "delete-btn";
   deleteBtn.innerText = "Delete";
+  buttonContainer.appendChild(deleteBtn)
 
-  const buttonContainer = document.createElement("div");
-  buttonContainer.className = "button-container";
-  buttonContainer.append(completeBtn, deleteBtn);
-
-  li.append(textSpan, deadlineSpan, details, timerContainer, buttonContainer);
-
-  function stopTimer() {
-      clearInterval(activeTimers[id]);
-      delete activeTimers[id];
-  }
-
-  startBtn.addEventListener("click", () => {
-    if (activeTimers[id]) return;
-
-    activeTimers[id] = setInterval(() => {
-      if (remaining > 0) {
-        remaining--;
-        li.dataset.timeLeft = remaining;
-        updateDisplay();
-      } else {
-        stopTimer();
-        notify("Timer Finished!", text);
-      }
-    }, 1000);
-
-    startBtn.style.display = "none";
-    pauseBtn.style.display = "inline-block";
-    resetBtn.style.display = "inline-block";
-  });
-
-  pauseBtn.addEventListener("click", () => {
-    stopTimer();
-    startBtn.style.display = "inline-block";
-    pauseBtn.style.display = "none";
-  });
-
-  resetBtn.addEventListener("click", () => {
-    stopTimer();
-    remaining = parseInt(duration);
-    li.dataset.timeLeft = remaining;
-    updateDisplay();
-
-    startBtn.style.display = "inline-block";
-    pauseBtn.style.display = "none";
-    resetBtn.style.display = "none";
-  });
-
-  completeBtn.addEventListener("click", () => {
-    li.classList.toggle("completed");
-    if (li.classList.contains("completed")) {
-      completedList.appendChild(li);
-      completeBtn.innerText = "Undo";
-      stopTimer();
-    } else {
-      activeList.appendChild(li);
-      completeBtn.innerText = "Complete";
-    }
-    saveTasks();
-  });
-
-  deleteBtn.addEventListener("click", () => {
-    stopTimer();
-    li.remove();
-    saveTasks();
-  });
+  li.appendChild(buttonContainer);
 
   checkDeadline(li);
   return li;

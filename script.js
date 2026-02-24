@@ -52,7 +52,37 @@ function closeAllControls() {
         c.classList.remove("show-controls");
     });
 }
+function moveWithAnimation(item, targetList) {
 
+    // Start exit animation
+    item.classList.add("task-exit");
+
+    requestAnimationFrame(() => {
+        item.classList.add("task-exit-active");
+    });
+
+    setTimeout(() => {
+
+        // Move element
+        item.remove();
+        targetList.appendChild(item);
+
+        // Reset exit classes
+        item.classList.remove("task-exit", "task-exit-active");
+
+        // Enter animation
+        item.classList.add("task-enter");
+
+        requestAnimationFrame(() => {
+            item.classList.add("task-enter-active");
+        });
+
+        setTimeout(() => {
+            item.classList.remove("task-enter", "task-enter-active");
+        }, 250);
+
+    }, 250);
+}
 // Create Todo Item
 function createTodoItem(taskText, category = 'Personal', priority = 'Low') {
     let li = document.createElement("li");
@@ -64,15 +94,16 @@ function createTodoItem(taskText, category = 'Personal', priority = 'Low') {
     let checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.addEventListener("change", function () {
-        if (checkbox.checked) {
-            li.classList.add("completed");
-            completedList.appendChild(li);
-        } else {
-            li.classList.remove("completed");
-            list.appendChild(li);
-        }
-        saveTasks();
-    });
+    if (checkbox.checked) {
+        li.classList.add("completed");
+        moveWithAnimation(li, completedList);
+    } else {
+        li.classList.remove("completed");
+        moveWithAnimation(li, list);
+    }
+
+    setTimeout(saveTasks, 300); // wait for animation before saving
+});
 
     // Task text
     let span = document.createElement("span");

@@ -192,3 +192,26 @@ h1 span.logo {
         box-sizing: border-box;
     }
 }
+/* ===== Smooth Move Animation ===== */
+
+.task-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.task-exit-active {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all 0.25s ease;
+}
+
+.task-enter {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.task-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.25s ease;
+}

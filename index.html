@@ -1,46 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>✅ TODO LIST</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="app">
-    <header>
-      <h1><span>✅</span> <span class="logo">TODO LIST</span></h1>
-    </header>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>TODO List</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <h1><span>✅</span> <span class="logo">TODO LIST</span></h1>
+        <input type="text" id="searchInput" placeholder="Search tasks..." />
+      </header>
 
-    <div class="input-area">
-      <input type="text" id="todoInput" placeholder="What needs to be done?">
-      <select id="categoryInput">
-        <option value="Personal">Personal</option>
-        <option value="Work">Work</option>
-        <option value="Study">Study</option>
-        <option value="Other">Other</option>
-      </select>
-      <select id="priorityInput">
-        <option value="Low">Low</option>
-        <option value="Medium">Medium</option>
-        <option value="High">High</option>
-      </select>
-      <button id="addBtn">+</button>
+      <div class="input-area">
+        <input
+          type="text"
+          id="todoInput"
+          placeholder="Add a new item..."
+          maxlength="80"
+        />
+
+        <select id="categoryInput">
+          <option value="Personal">Personal</option>
+          <option value="Work">Work</option>
+          <option value="Study">Study</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <select id="priorityInput">
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+
+        <input type="datetime-local" id="deadlineInput" />
+
+        <div class="timer-dropdowns">
+            <select id="hoursInput"></select>
+            <select id="minutesInput"></select>
+            <select id="secondsInput"></select>
+        </div>
+
+        <button id="addBtn">ADD</button>
+      </div>
+
+      <div class="lists">
+        <div class="section">
+          <h2>Active Tasks</h2>
+          <ul id="activeList"></ul>
+        </div>
+
+        <div class="section">
+          <h2>Completed Tasks</h2>
+          <ul id="completedList"></ul>
+        </div>
+      </div>
     </div>
 
-    <!-- Active Section -->
-    <div class="section">
-      <h2>Active Tasks</h2>
-      <ul id="activeList"></ul>
-    </div>
-
-    <!-- Completed Section -->
-    <div class="section">
-      <h2>Completed Tasks</h2>
-      <ul id="completedList"></ul>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>

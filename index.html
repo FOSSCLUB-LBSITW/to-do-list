@@ -54,6 +54,74 @@
           <ul id="activeList"></ul>
         </div>
 
+        <input type="text" id="searchInput" placeholder="Search tasks...">
+      </header>
+
+      <div class="input-area">
+        <input
+          type="text"
+          id="todoInput"
+          placeholder="Add a new item..."
+          maxlength="80"
+        />
+        <select id="categoryInput">
+          <option value="Personal">Personal</option>
+          <option value="Work">Work</option>
+          <option value="Errands">Errands</option>
+        </select>
+        <select id="priorityInput">
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+        <button id="addBtn">ADD</button>
+      </div>
+
+      <div class="lists">
+        <!-- Active Section -->
+        <div class="section">
+          <h2>Active Tasks</h2>
+          <ul id="activeList"></ul>
+        </div>
+    <div class="input-area">
+      <input type="text" id="todoInput" placeholder="What needs to be done?">
+      <select id="categoryInput">
+        <option value="Personal">Personal</option>
+        <option value="Work">Work</option>
+        <option value="Study">Study</option>
+        <option value="Other">Other</option>
+      </select>
+      <select id="priorityInput">
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+      <button id="addBtn">+</button>
+    </div>
+<!-- Filter Section -->
+<div class="input-area">
+  <select id="categoryFilter">
+    <option value="All">All Categories</option>
+    <option value="Personal">Personal</option>
+    <option value="Work">Work</option>
+    <option value="Study">Study</option>
+    <option value="Other">Other</option>
+  </select>
+
+  <select id="priorityFilter">
+    <option value="All">All Priorities</option>
+    <option value="Low">Low</option>
+    <option value="Medium">Medium</option>
+    <option value="High">High</option>
+  </select>
+</div>
+    <!-- Active Section -->
+    <div class="section">
+      <h2>Active Tasks</h2>
+      <ul id="activeList"></ul>
+    </div>
+
+        <!-- Completed Section -->
         <div class="section">
           <h2>Completed Tasks</h2>
           <ul id="completedList"></ul>

@@ -54,9 +54,9 @@ h1 span.logo {
 
 .input-area {
   display: flex;
-  padding: 20px 30px;
+  background: #aed581;
+  padding: 15px;
   gap: 10px;
-  background-color: #C8E6C9; /* Lighter green for input area */
 }
 
 #todoInput {

@@ -150,36 +150,18 @@ addBtn.addEventListener("click", function () {
     saveTasks();
   }
 });
-
-// Load tasks on page load and set up filters
-document.addEventListener("DOMContentLoaded", function () {
-    loadTasks();
+// Clear All Tasks
+document.getElementById("clearAllBtn").addEventListener("click", function () {
+    const confirmClear = confirm("Are you sure you want to delete ALL tasks?");
     
-    // Event listener for search input
-    searchInput.addEventListener('input', filterTasks);
-
-    // Filter functionality for category and priority
-    const categoryFilter = document.getElementById("categoryFilter");
-    const priorityFilter = document.getElementById("priorityFilter");
-
-    function filterTasksByCatAndPrio() {
-        const selectedCategory = categoryFilter.value;
-        const selectedPriority = priorityFilter.value;
-
-        document.querySelectorAll(".todo-item").forEach(task => {
-            const taskCategory = task.dataset.category;
-            const taskPriority = task.dataset.priority;
-            const categoryMatch = selectedCategory === "All" || taskCategory === selectedCategory;
-            const priorityMatch = selectedPriority === "All" || taskPriority === selectedPriority;
-
-            if (categoryMatch && priorityMatch) {
-                task.style.display = "flex";
-            } else {
-                task.style.display = "none";
-            }
-        });
+    if (confirmClear) {
+        list.innerHTML = "";
+        completedList.innerHTML = "";
+        
+        localStorage.removeItem('activeTasks');
+        localStorage.removeItem('completedTasks');
     }
-
-    categoryFilter.addEventListener("change", filterTasksByCatAndPrio);
-    priorityFilter.addEventListener("change", filterTasksByCatAndPrio);
 });
+
+// Load when page ready
+document.addEventListener("DOMContentLoaded", loadTasks);

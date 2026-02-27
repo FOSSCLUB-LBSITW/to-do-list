@@ -44,10 +44,16 @@ header h1 {
   color: #c8e6c9;
 }
 .input-area {
-  display: flex;
-  background: #aed581;
-  padding: 15px;
-  gap: 10px;
+    background: #a6d57a;
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+     width: 100%;
+      box-sizing: border-box; 
+}
+.input-area input {
+    flex: 1;
 }
 #todoInput {
   flex: 1;
@@ -247,3 +253,22 @@ h2 {
 .controls span:hover {
   color: #4caf50;
 }
+
+
+.clear-btn {
+    background: #ff6b6b;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.clear-btn:hover {
+    opacity: 0.8;
+}
+
+.full {
+    width: 100%;
+}
+

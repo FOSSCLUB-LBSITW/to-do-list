@@ -135,6 +135,18 @@ document.getElementById("addBtn").addEventListener("click", function () {
     inputField.value = "";
     saveTasks();
 });
+// Clear All Tasks
+document.getElementById("clearAllBtn").addEventListener("click", function () {
+    const confirmClear = confirm("Are you sure you want to delete ALL tasks?");
+    
+    if (confirmClear) {
+        list.innerHTML = "";
+        completedList.innerHTML = "";
+        
+        localStorage.removeItem('activeTasks');
+        localStorage.removeItem('completedTasks');
+    }
+});
 
 // Load when page ready
 document.addEventListener("DOMContentLoaded", loadTasks);

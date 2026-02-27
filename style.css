@@ -1,274 +1,217 @@
 body {
+  font-family: "Roboto", sans-serif;
+  background-color: #e8f5e9; /* Light green background */
+  color: #333;
+  line-height: 1.6;
   margin: 0;
-  padding: 0;
-  font-family: 'Poppins', sans-serif;
-
-  /* Remove flex completely */
-  
-  /* notebook background */
-  background: repeating-linear-gradient(
-    to bottom,
-    #fefefe,
-    #fefefe 28px,
-    #d0ebff 29px
-  ),
-  linear-gradient(to right, #fdfdfd, #fefefe);
-
-  background-size: 100% 30px;
-  background-attachment: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding-top: 30px;
 }
 
-
 .app {
+  max-width: 800px;
   width: 100%;
-  max-width: 600px;
-  margin: 60px auto;   /* centers horizontally + pushes down */
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
 header {
-  background: #1b5e20;
-  color: white;
-  padding: 15px 20px;
+  background-color: #4CAF50; /* Green header */
+  padding: 15px 30px;
+  border-bottom: 1px solid #388E3C;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-header h1 {
+#searchInput {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 250px;
+    font-size: 0.9em;
+}
+
+h1 {
+  color: white; /* White text for contrast */
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.8em;
   display: flex;
   align-items: center;
-  gap: 5px;
 }
 
-.logo {
-  font-weight: bold;
-  color: #c8e6c9;
+h1 span.logo {
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-left: 10px;
 }
+
 .input-area {
-    background: #a6d57a;
-    padding: 10px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-     width: 100%;
-      box-sizing: border-box; 
+  display: flex;
+  background: #aed581;
+  padding: 15px;
+  gap: 10px;
 }
-.input-area input {
-    flex: 1;
-}
+
 #todoInput {
-  flex: 1;
+  flex-grow: 1;
   padding: 12px;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1em;
 }
-.input-area select {
-  padding: 12px;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  cursor: pointer;
+
+#categoryInput, #priorityInput {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: white;
 }
+
 #addBtn {
-  width: 50px;
-  border: none;
-  background: #8bc34a;
+  padding: 12px 20px;
+  background-color: #4CAF50; /* Green button */
   color: white;
-  font-size: 1.5rem;
-  border-radius: 6px;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background-color 0.3s ease;
 }
+
 #addBtn:hover {
-  background: #689f38;
-}
-.todo-item {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-.drag-handle {
-    cursor: pointer;
-    font-weight: bold;
-    margin-right: 1rem;
-}
-.controls {
-    display: none;
-    position: absolute;
-    right: 10px;
-    background: white;
-    border: 1px solid #ccc;
-    padding: 5px;
-    border-radius: 5px;
-}
-.controls span {
-    margin: 0 5px;
-    cursor: pointer;
-}
-.show-controls {
-    display: inline-block;
-}
-.edit-btn {
-    cursor: pointer;
-    margin-left: 5px;
-    font-size: 1.2rem;
-}
-.edit-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 1;
-}
-.edit-input {
-    flex: 1;
-    padding: 6px 10px;
-    border: 2px solid #4caf50;
-    border-radius: 4px;
-    font-size: 1rem;
-}
-.save-btn,
-.cancel-btn {
-    cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    white-space: nowrap;
-}
-.save-btn {
-    background: #4caf50;
-    color: white;
-}
-.cancel-btn {
-    background: #f44336;
-    color: white;
-}
-.save-btn:hover {
-    background: #45a049;
-}
-.cancel-btn:hover {
-    background: #da190b;
-}
-.todo-item {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px;
-    background: rgba(255, 255, 255, 0.8);
-    margin: 4px 0;
-    border-radius: 4px;
-}
-.task-info {
-    display: flex;
-    gap: 5px;
-    margin-right: 10px;
-}
-.badge {
-    padding: 2px 6px;
-    border-radius: 4px;
-    color: white;
-    font-size: 0.75rem;
-    font-weight: bold;
-}
-.priority-high { background-color: #ff5252; }
-.priority-medium { background-color: #fb8c00; }
-.priority-low { background-color: #4caf50; }
-.category-tag {
-    background-color: #607d8b;
-    color: white;
-}
-.todo-text {
-    flex: 1;
-    cursor: text;
-}
-.drag-handle {
-    cursor: pointer;
-    font-weight: bold;
-    margin-right: 5px;
+  background-color: #388E3C; /* Darker green on hover */
 }
 
-.completed {
-  background-color: #f5f5f5;
+.lists {
+  padding: 20px 30px;
 }
 
-.completed .todo-text {
-  text-decoration: line-through;
-  color: #9e9e9e;
-  font-style: italic;
-  transition: 0.3s ease;
+.section {
+  margin-bottom: 30px;
 }
 
-.active{
-    background-color: #45a049;
-    border-radius: 4px;
-}
-
-
-h2 {
-  font-size: 1.2rem;
-  margin: 20px 0 10px;
-  color: #1b5e20;
-  border-left: 5px solid #8bc34a;
-  padding-left: 8px;
-}
-
-#todoList {
-  background: #e8f5e9; /* light green */
-  padding: 10px;
-  border-radius: 6px;
+.section h2 {
+  margin-top: 0;
+  color: #388E3C; /* Green text */
+  border-bottom: 2px solid #4CAF50; /* Green border */
+  padding-bottom: 10px;
   margin-bottom: 20px;
 }
 
-#completedList {
-  background: #f5f5f5; /* light gray */
-  padding: 10px;
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #fafafa;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.todo-item.completed .todo-text {
+  text-decoration: line-through;
+  color: #aaa;
+}
+
+.todo-text {
+    flex-grow: 1;
+    margin-right: 15px;
+}
+
+.todo-details {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.category, .priority {
+    font-size: 0.85em;
+    padding: 4px 8px;
+    border-radius: 12px;
+    background-color: #eee;
+}
+
+.button-container button {
+  padding: 8px 12px;
+  border: none;
   border-radius: 6px;
-}
-
-.todo-item:hover {
-  background: #f1f8e9; /* pale green highlight */
-  transform: scale(1.01);
-  transition: 0.2s ease;
-}
-
-.controls {
-  display: none;
-  position: absolute;
-  right: 10px;
-  background: #ffffff;
-  border: 1px solid #ddd;
-  padding: 5px 8px;
-  border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.controls span {
-  margin: 0 5px;
   cursor: pointer;
-  font-size: 1.1rem;
-  transition: color 0.2s;
+  margin-left: 8px;
+  transition: background-color 0.3s ease;
 }
 
-.controls span:hover {
-  color: #4caf50;
-}
-
-
-.clear-btn {
-    background: #ff6b6b;
-    border: none;
+.complete-btn {
+    background-color: #28a745;
     color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    cursor: pointer;
 }
 
-.clear-btn:hover {
-    opacity: 0.8;
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
 }
 
-.full {
+@media (max-width: 768px) {
+  .input-area {
+    flex-direction: column;
+  }
+  #categoryInput, #priorityInput, #addBtn {
     width: 100%;
+  }
+  .todo-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .button-container {
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .button-container button {
+    width: auto;
+    padding: 10px 15px;
+    cursor: pointer;
+  }
 }
 
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    #searchInput {
+        width: 100%;
+        margin-top: 15px;
+        box-sizing: border-box;
+    }
+}
+/* ===== Smooth Move Animation ===== */
+
+.task-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.task-exit-active {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all 0.25s ease;
+}
+
+.task-enter {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.task-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.25s ease;
+}

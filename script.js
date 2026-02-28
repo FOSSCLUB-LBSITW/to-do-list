@@ -1,12 +1,27 @@
+// Globals
 const addBtn = document.getElementById("addBtn");
-const todoList = document.getElementById("activeList");
+const activeList = document.getElementById("activeList");
 const completedList = document.getElementById("completedList");
 const inputField = document.getElementById("todoInput");
 const categoryInput = document.getElementById("categoryInput");
 const priorityInput = document.getElementById("priorityInput");
+const deadlineInput = document.getElementById("deadlineInput");
 const searchInput = document.getElementById("searchInput");
+const categoryFilter = document.getElementById("categoryFilter");
+const priorityFilter = document.getElementById("priorityFilter");
 
-// Save all tasks to localStorage
+// Notifications
+if ("Notification" in window && Notification.permission !== "granted") {
+  Notification.requestPermission();
+}
+
+function sendNotification(title, body) {
+  if (Notification.permission === "granted") {
+    new Notification(title, { body });
+  }
+}
+
+// Save tasks to localStorage
 function saveTasks() {
   let tasks = [];
   document.querySelectorAll(".todo-item").forEach((li) => {
@@ -14,6 +29,7 @@ function saveTasks() {
       text: li.querySelector(".todo-text").innerText,
       category: li.dataset.category,
       priority: li.dataset.priority,
+      deadline: li.dataset.deadline,
       completed: li.classList.contains("completed"),
     });
   });
@@ -23,50 +39,39 @@ function saveTasks() {
 // Load tasks from localStorage
 function loadTasks() {
   const tasks = JSON.parse(localStorage.getItem("todos"));
-  if (tasks) {
-    tasks.forEach((task) => {
-      let li = createTodoItem(task.text, task.category, task.priority);
-      if (task.completed) {
-        li.classList.add("completed");
-        li.querySelector('input[type="checkbox"]').checked = true;
-        completedList.appendChild(li);
-      } else {
-        todoList.appendChild(li);
+  if (!tasks) return;
+
+  tasks.forEach((task) => {
+    const li = createTodoItem(
+      task.text,
+      task.category,
+      task.priority,
+      task.deadline
+    );
+
+    if (task.completed) {
+      li.classList.add("completed");
+      const checkbox = li.querySelector('input[type="checkbox"]');
+      if (checkbox) {
+          checkbox.checked = true;
       }
-    });
-  }
+      completedList.appendChild(li);
+    } else {
+      activeList.appendChild(li);
+    }
+  });
 }
 
-// Filter tasks based on search input
-function filterTasks() {
-    const searchTerm = searchInput.value.toLowerCase();
-
-    // Filter active tasks
-    document.querySelectorAll('#activeList .todo-item').forEach(li => {
-        const taskText = li.querySelector('.todo-text').innerText.toLowerCase();
-        li.style.display = taskText.includes(searchTerm) ? "" : "none";
-    });
-
-    // Filter completed tasks
-    document.querySelectorAll('#completedList .todo-item').forEach(li => {
-        const taskText = li.querySelector('.todo-text').innerText.toLowerCase();
-        li.style.display = taskText.includes(searchTerm) ? "" : "none";
-    });
-}
-
+// Animation for moving tasks between lists
 function moveWithAnimation(item, targetList) {
-    // Start exit animation
     item.classList.add("task-exit");
     requestAnimationFrame(() => {
         item.classList.add("task-exit-active");
     });
     setTimeout(() => {
-        // Move element
         item.remove();
         targetList.appendChild(item);
-        // Reset exit classes
         item.classList.remove("task-exit", "task-exit-active");
-        // Enter animation
         item.classList.add("task-enter");
         requestAnimationFrame(() => {
             item.classList.add("task-enter-active");
@@ -77,109 +82,139 @@ function moveWithAnimation(item, targetList) {
     }, 250);
 }
 
-// Merged Create Todo Item
-function createTodoItem(taskText, category = 'Personal', priority = 'Low') {
-    let li = document.createElement("li");
-    li.className = "todo-item";
-    li.dataset.category = category;
-    li.dataset.priority = priority;
+// Create a new todo item element
+function createTodoItem(text, category, priority, deadline) {
+  const li = document.createElement("li");
+  li.className = "todo-item";
+  li.dataset.category = category;
+  li.dataset.priority = priority;
+  if(deadline) {
+      li.dataset.deadline = deadline;
+  }
 
-    let textSpan = document.createElement('span');
-    textSpan.className = 'todo-text';
-    textSpan.innerText = taskText;
+  const textSpan = document.createElement("span");
+  textSpan.className = "todo-text";
+  textSpan.innerText = text;
 
-    let detailsDiv = document.createElement('div');
-    detailsDiv.className = 'todo-details';
+  const details = document.createElement("div");
+  details.className = "todo-details";
+  details.innerHTML = `<span class="category">${category}</span><span class="priority">${priority}</span>`;
 
-    let categorySpan = document.createElement('span');
-    categorySpan.className = 'category';
-    categorySpan.innerText = category;
+  const deadlineSpan = document.createElement("div");
+  deadlineSpan.className = "deadline";
+  if (deadline) {
+    deadlineSpan.innerText = "Due: " + new Date(deadline).toLocaleString();
+  }
 
-    let prioritySpan = document.createElement('span');
-    prioritySpan.className = 'priority';
-    prioritySpan.innerText = priority;
+  const buttons = document.createElement("div");
+  buttons.className = "button-container";
 
-    detailsDiv.appendChild(categorySpan);
-    detailsDiv.appendChild(prioritySpan);
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.addEventListener("change", function () {
+    if (checkbox.checked) {
+      li.classList.add("completed");
+      moveWithAnimation(li, completedList);
+    } else {
+      li.classList.remove("completed");
+      moveWithAnimation(li, activeList);
+    }
+    setTimeout(saveTasks, 300);
+  });
 
-    let buttonContainer = document.createElement("div");
-    buttonContainer.className = "button-container";
+  const deleteBtn = document.createElement("button");
+  deleteBtn.className = "delete-btn";
+  deleteBtn.innerText = "Delete";
+  deleteBtn.addEventListener("click", () => {
+    li.remove();
+    saveTasks();
+  });
 
-    // Checkbox from main for completion
-    let checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.addEventListener("change", function () {
-        if (checkbox.checked) {
-            li.classList.add("completed");
-            moveWithAnimation(li, completedList);
-        } else {
-            li.classList.remove("completed");
-            moveWithAnimation(li, todoList);
-        }
-        setTimeout(saveTasks, 300);
-    });
+  buttons.appendChild(checkbox);
+  buttons.appendChild(deleteBtn);
 
-    let deleteButton = document.createElement("button");
-    deleteButton.innerText = "Delete";
-    deleteButton.className = "delete-btn";
-    deleteButton.addEventListener("click", function () {
-        li.remove();
-        saveTasks();
-    });
+  li.appendChild(textSpan);
+  li.appendChild(details);
+  if (deadline) {
+    li.appendChild(deadlineSpan);
+  }
+  li.appendChild(buttons);
 
-    li.appendChild(textSpan);
-    li.appendChild(detailsDiv);
-
-    buttonContainer.appendChild(checkbox);
-    buttonContainer.appendChild(deleteButton);
-
-    li.appendChild(buttonContainer);
-
-    return li;
+  checkDeadline(li);
+  return li;
 }
 
 // Add a new task
-addBtn.addEventListener("click", function () {
-  const taskText = inputField.value.trim();
-  const category = categoryInput.value;
-  const priority = priorityInput.value;
-  if (taskText !== "") {
-    let newTodo = createTodoItem(taskText, category, priority);
-    todoList.appendChild(newTodo);
-    inputField.value = "";
-    saveTasks();
-  }
+addBtn.addEventListener("click", () => {
+  const text = inputField.value.trim();
+  if (!text) return;
+
+  const li = createTodoItem(
+    text,
+    categoryInput.value,
+    priorityInput.value,
+    deadlineInput.value
+  );
+
+  activeList.appendChild(li);
+  inputField.value = "";
+  categoryInput.value = "Personal";
+  priorityInput.value = "Low";
+  deadlineInput.value = "";
+  saveTasks();
 });
 
-// Load tasks on page load and set up filters
+// Deadline checking and visual cues
+function checkDeadline(li) {
+  if (!li.dataset.deadline || li.classList.contains("completed")) return;
+
+  const now = new Date();
+  const deadline = new Date(li.dataset.deadline);
+  const diff = deadline - now;
+
+  li.classList.remove("near-deadline", "overdue");
+
+  if (diff <= 0) {
+    li.classList.add("overdue");
+    sendNotification("Task Overdue!", li.querySelector(".todo-text").innerText);
+  } else if (diff <= 3600000) { // 1 hour
+    li.classList.add("near-deadline");
+    sendNotification("Task Due Soon!", li.querySelector(".todo-text").innerText);
+  }
+}
+
+// Periodically check deadlines for all active tasks
+setInterval(() => {
+  document.querySelectorAll("#activeList .todo-item").forEach(checkDeadline);
+}, 30000);
+
+// Combined filter function for search, category, and priority
+function combinedFilter() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const selectedCategory = categoryFilter.value;
+    const selectedPriority = priorityFilter.value;
+
+    document.querySelectorAll(".todo-item").forEach(task => {
+        const taskText = task.querySelector('.todo-text').innerText.toLowerCase();
+        const taskCategory = task.dataset.category;
+        const taskPriority = task.dataset.priority;
+
+        const searchMatch = taskText.includes(searchTerm);
+        const categoryMatch = selectedCategory === "All" || taskCategory === selectedCategory;
+        const priorityMatch = selectedPriority === "All" || taskPriority === selectedPriority;
+
+        if (searchMatch && categoryMatch && priorityMatch) {
+            task.style.display = "flex";
+        } else {
+            task.style.display = "none";
+        }
+    });
+}
+
+// Event listeners for page load and filters
 document.addEventListener("DOMContentLoaded", function () {
     loadTasks();
-    
-    // Event listener for search input
-    searchInput.addEventListener('input', filterTasks);
-
-    // Filter functionality for category and priority
-    const categoryFilter = document.getElementById("categoryFilter");
-    const priorityFilter = document.getElementById("priorityFilter");
-
-    function filterTasksByCatAndPrio() {
-        const selectedCategory = categoryFilter.value;
-        const selectedPriority = priorityFilter.value;
-
-        document.querySelectorAll(".todo-item").forEach(task => {
-            const taskCategory = task.dataset.category;
-            const taskPriority = task.dataset.priority;
-            const categoryMatch = selectedCategory === "All" || taskCategory === selectedCategory;
-            const priorityMatch = selectedPriority === "All" || taskPriority === selectedPriority;
-
-            if (categoryMatch && priorityMatch) {
-                task.style.display = "flex";
-            } else {
-                task.style.display = "none";
-            }
-        });
-    }
-
-    categoryFilter.addEventListener("change", filterTasksByCatAndPrio);
-    priorityFilter.addEventListener("change", filterTasksByCatAndPrio);
+    searchInput.addEventListener("input", combinedFilter);
+    categoryFilter.addEventListener("change", combinedFilter);
+    priorityFilter.addEventListener("change", combinedFilter);
 });

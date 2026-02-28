@@ -1,4 +1,55 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <link rel="stylesheet" href="style.css"> <!-- Assuming a single stylesheet for simplicity -->
+</head>
+<body>
+    <div class="app">
+        <h1>Todo List</h1>
+        <div class="controls">
+            <input type="text" id="todoInput" placeholder="Add a new task...">
+            <input type="text" id="categoryInput" placeholder="Category (e.g., Work)">
+            <select id="priorityInput">
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+            </select>
+            <input type="datetime-local" id="deadlineInput">
+            <button id="addBtn">Add Task</button>
+        </div>
+        <div class="filters">
+            <input type="text" id="searchInput" placeholder="Search tasks...">
+            <select id="categoryFilter">
+                <option value="All">All Categories</option>
+                <option value="Personal">Personal</option>
+                <option value="Work">Work</option>
+                <option value="Ideas">Ideas</option>
+                <!-- Add more categories as needed -->
+            </select>
+            <select id="priorityFilter">
+                <option value="All">All Priorities</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+            </select>
+        </div>
+        <div class="lists">
+            <div class="list-container">
+                <h2>Active Tasks</h2>
+                <ul id="activeList"></ul>
+            </div>
+            <div class="list-container">
+                <h2>Completed Tasks</h2>
+                <ul id="completedList"></ul>
+            </div>
+        </div>
+    </div>
+    <script src="conflictfile"></script>
+</body>
+</html>
 <html>
   <head>
     <title>TODO List</title>

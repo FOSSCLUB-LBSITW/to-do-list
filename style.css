@@ -1,33 +1,33 @@
 body {
-  font-family: "Roboto", sans-serif;
-  background-color: #e8f5e9; /* Light green background */
-  color: #333;
-  line-height: 1.6;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-  padding-top: 30px;
+    font-family: "Roboto", sans-serif;
+    background-color: #e8f5e9; /* Light green background */
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding-top: 30px;
 }
 
 .app {
-  max-width: 800px;
-  width: 100%;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+    max-width: 900px; /* Adjusted for more space */
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
 header {
-  background-color: #4CAF50; /* Green header */
-  padding: 15px 30px;
-  border-bottom: 1px solid #388E3C;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
+    background-color: #4CAF50; /* Green header */
+    padding: 15px 30px;
+    border-bottom: 1px solid #388E3C;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 #searchInput {
@@ -39,117 +39,125 @@ header {
 }
 
 h1 {
-  color: white; /* White text for contrast */
-  margin: 0;
-  font-size: 1.8em;
-  display: flex;
-  align-items: center;
+    color: white; /* White text for contrast */
+    margin: 0;
+    font-size: 1.8em;
+    display: flex;
+    align-items: center;
 }
 
 h1 span.logo {
-  font-weight: 700;
-  letter-spacing: 1px;
-  margin-left: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-left: 10px;
 }
 
-.input-area {
-  display: flex;
-  padding: 20px 30px;
-  gap: 10px;
-  background-color: #C8E6C9; /* Lighter green for input area */
+.controls, .filters {
+    display: flex;
+    padding: 20px 30px;
+    gap: 10px;
+    background-color: #C8E6C9; /* Lighter green for input area */
+    flex-wrap: wrap;
 }
 
-#todoInput {
-  flex-grow: 1;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1em;
-}
-
-#categoryInput, #priorityInput {
+#todoInput, #categoryInput, #priorityInput, #deadlineInput, #categoryFilter, #priorityFilter {
     padding: 12px;
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: white;
 }
 
+#todoInput {
+    flex-grow: 1;
+}
+
 #addBtn {
-  padding: 12px 20px;
-  background-color: #4CAF50; /* Green button */
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    padding: 12px 20px;
+    background-color: #4CAF50; /* Green button */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 #addBtn:hover {
-  background-color: #388E3C; /* Darker green on hover */
+    background-color: #388E3C; /* Darker green on hover */
 }
 
 .lists {
-  padding: 20px 30px;
+    padding: 20px 30px;
 }
 
-.section {
-  margin-bottom: 30px;
-}
-
-.section h2 {
-  margin-top: 0;
-  color: #388E3C; /* Green text */
-  border-bottom: 2px solid #4CAF50; /* Green border */
-  padding-bottom: 10px;
-  margin-bottom: 20px;
+.list-container h2 {
+    color: #388E3C;
+    border-bottom: 2px solid #4CAF50;
+    padding-bottom: 10px;
 }
 
 .todo-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  background-color: #fafafa;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    background-color: #fafafa;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    border-left: 6px solid transparent;
 }
 
 .todo-item.completed .todo-text {
-  text-decoration: line-through;
-  color: #aaa;
+    text-decoration: line-through;
+    color: #aaa;
+}
+
+.todo-item.overdue {
+    border-left-color: red;
+    background-color: #ffebee;
+}
+
+.todo-item.near-deadline {
+    border-left-color: orange;
+    background-color: #fff3e0;
 }
 
 .todo-text {
-    flex-grow: 1;
-    margin-right: 15px;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.deadline {
+    font-size: 0.85em;
+    color: #555;
+    margin-bottom: 10px;
 }
 
 .todo-details {
     display: flex;
     gap: 15px;
+    margin-bottom: 10px;
     align-items: center;
 }
 
 .category, .priority {
-    font-size: 0.85em;
+    font-size: 0.8em;
     padding: 4px 8px;
     border-radius: 12px;
     background-color: #eee;
 }
 
-.button-container button {
-  padding: 8px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-left: 8px;
-  transition: background-color 0.3s ease;
+.button-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
-.complete-btn {
-    background-color: #28a745;
-    color: white;
+.button-container button {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .delete-btn {
@@ -157,28 +165,36 @@ h1 span.logo {
     color: white;
 }
 
+/* Smooth Move Animation */
+.task-exit {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.task-exit-active {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: all 0.25s ease;
+}
+
+.task-enter {
+    opacity: 0;
+    transform: translateY(-8px);
+}
+
+.task-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.25s ease;
+}
+
 @media (max-width: 768px) {
-  .input-area {
-    flex-direction: column;
-  }
-  #categoryInput, #priorityInput, #addBtn {
-    width: 100%;
-  }
-  .todo-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .button-container {
-    width: 100%;
-    margin-top: 10px;
-    display: flex;
-    justify-content: flex-end;
-  }
-  .button-container button {
-    width: auto;
-    padding: 10px 15px;
-    cursor: pointer;
-  }
+    .controls, .filters {
+        flex-direction: column;
+    }
+    #categoryInput, #priorityInput, #addBtn, #categoryFilter, #priorityFilter, #deadlineInput {
+        width: 100%;
+    }
 }
 
 @media (max-width: 600px) {
@@ -191,27 +207,4 @@ h1 span.logo {
         margin-top: 15px;
         box-sizing: border-box;
     }
-}
-/* ===== Smooth Move Animation ===== */
-
-.task-exit {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.task-exit-active {
-  opacity: 0;
-  transform: scale(0.95);
-  transition: all 0.25s ease;
-}
-
-.task-enter {
-  opacity: 0;
-  transform: translateY(-8px);
-}
-
-.task-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-  transition: all 0.25s ease;
 }

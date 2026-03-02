@@ -3,7 +3,7 @@
    ======================= */
 body {
     font-family: "Roboto", sans-serif;
-    background-color: #e8f5e9; /* Light green background */
+    background-color: #e8f5e9;
     color: #333;
     line-height: 1.6;
     margin: 0;
@@ -15,7 +15,7 @@ body {
 }
 
 .app {
-    max-width: 900px; /* Adjusted for more space */
+    max-width: 950px;
     width: 100%;
     background: #fff;
     border-radius: 12px;
@@ -27,7 +27,7 @@ body {
    Header
    ======================= */
 header {
-    background-color: #4CAF50; /* Green header */
+    background-color: #4CAF50;
     padding: 15px 30px;
     border-bottom: 1px solid #388E3C;
     display: flex;
@@ -59,7 +59,7 @@ header {
 }
 
 h1 {
-    color: white; /* White text for contrast */
+    color: white;
     margin: 0;
     font-size: 1.8em;
     display: flex;
@@ -79,11 +79,13 @@ h1 span.logo {
     display: flex;
     padding: 20px 30px;
     gap: 10px;
-    background-color: #C8E6C9; /* Lighter green for input area */
+    background-color: #C8E6C9;
     flex-wrap: wrap;
 }
 
-#todoInput, #categoryInput, #priorityInput, #deadlineInput, #categoryFilter, #priorityFilter {
+#todoInput, #categoryInput, #priorityInput, #deadlineInput,
+#categoryFilter, #priorityFilter,
+.timer-dropdowns select {
     padding: 12px;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -94,9 +96,14 @@ h1 span.logo {
     flex-grow: 1;
 }
 
+.timer-dropdowns {
+    display: flex;
+    gap: 5px;
+}
+
 #addBtn {
     padding: 12px 20px;
-    background-color: #4CAF50; /* Green button */
+    background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 8px;
@@ -105,7 +112,7 @@ h1 span.logo {
 }
 
 #addBtn:hover {
-    background-color: #388E3C; /* Darker green on hover */
+    background-color: #388E3C;
 }
 
 /* =======================
@@ -172,6 +179,36 @@ h1 span.logo {
     background-color: #eee;
 }
 
+/* =======================
+   Timer
+   ======================= */
+.timer-container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.timer-display {
+    font-weight: bold;
+}
+
+.timer-btn {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #e0e0e0;
+    transition: background-color 0.3s ease;
+}
+
+.timer-btn:hover {
+    background-color: #bdbdbd;
+}
+
+/* =======================
+   Buttons
+   ======================= */
 .button-container {
     display: flex;
     gap: 10px;

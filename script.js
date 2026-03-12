@@ -76,6 +76,7 @@ function saveTasks() {
             deadline: li.dataset.deadline,
             duration: li.dataset.duration,
             timeLeft: li.dataset.timeLeft,
+            timerEndsAt: li.dataset.timerEndsAt || null,
             completed: li.classList.contains("completed"),
         });
     });
@@ -97,7 +98,8 @@ function loadTasks() {
             task.deadline,
             task.duration || "0",
             task.id || Date.now().toString(),
-            task.timeLeft
+            task.timeLeft,
+            task.timerEndsAt
         );
 
         if (task.completed) {
@@ -132,7 +134,7 @@ function moveWithAnimation(item, targetList) {
 }
 
 // Create a new todo item
-function createTodoItem(text, category, priority, deadline, duration, id, timeLeft) {
+function createTodoItem(text, category, priority, deadline, duration, id, timeLeft, timerEndsAt = null) {
     id = id || Date.now().toString();
     duration = duration || "0";
     timeLeft = timeLeft || duration;
@@ -145,6 +147,7 @@ function createTodoItem(text, category, priority, deadline, duration, id, timeLe
     if (deadline) li.dataset.deadline = deadline;
     li.dataset.duration = duration;
     li.dataset.timeLeft = timeLeft;
+    li.dataset.timerEndsAt = timerEndsAt || "";
 
     const textSpan = document.createElement("span");
     textSpan.className = "todo-text";
@@ -203,27 +206,48 @@ function createTodoItem(text, category, priority, deadline, duration, id, timeLe
             delete activeTimers[id];
         }
 
-        startBtn.addEventListener("click", () => {
+        function startTimerLogic() {
             if (activeTimers[id]) return;
 
+            // Calculate the absolute end time and save it
+            if (!li.dataset.timerEndsAt || parseInt(li.dataset.timerEndsAt) <= Date.now()) {
+                li.dataset.timerEndsAt = Date.now() + (remaining * 1000);
+                saveTasks();
+            }
+
             activeTimers[id] = setInterval(() => {
+                const endsAt = parseInt(li.dataset.timerEndsAt);
+                remaining = Math.floor((endsAt - Date.now()) / 1000);
+
                 if (remaining > 0) {
-                    remaining--;
                     li.dataset.timeLeft = remaining;
                     updateDisplay();
                 } else {
+                    remaining = 0;
+                    li.dataset.timeLeft = 0;
+                    updateDisplay();
                     stopTimer();
+                    li.dataset.timerEndsAt = "";
+                    saveTasks();
                     sendNotification("Timer Finished!", text);
+                    
+                    startBtn.style.display = "inline-block";
+                    pauseBtn.style.display = "none";
                 }
             }, 1000);
 
             startBtn.style.display = "none";
             pauseBtn.style.display = "inline-block";
             resetBtn.style.display = "inline-block";
-        });
+        }
+
+        startBtn.addEventListener("click", startTimerLogic);
 
         pauseBtn.addEventListener("click", () => {
             stopTimer();
+            li.dataset.timerEndsAt = ""; // Clear so it doesn't auto-resume
+            li.dataset.timeLeft = remaining;
+            saveTasks();
             startBtn.style.display = "inline-block";
             pauseBtn.style.display = "none";
         });
@@ -232,12 +256,26 @@ function createTodoItem(text, category, priority, deadline, duration, id, timeLe
             stopTimer();
             remaining = parseInt(duration);
             li.dataset.timeLeft = remaining;
+            li.dataset.timerEndsAt = "";
             updateDisplay();
+            saveTasks();
 
             startBtn.style.display = "inline-block";
             pauseBtn.style.display = "none";
             resetBtn.style.display = "none";
         });
+
+        // Auto-resume logic
+        if (timerEndsAt && parseInt(timerEndsAt) > Date.now()) {
+            remaining = Math.floor((parseInt(timerEndsAt) - Date.now()) / 1000);
+            startTimerLogic();
+        } else if (timerEndsAt && parseInt(timerEndsAt) <= Date.now()) {
+            remaining = 0;
+            li.dataset.timeLeft = 0;
+            li.dataset.timerEndsAt = "";
+            updateDisplay();
+            // Don't save here to avoid unnecessary writes, wait for manual action or next save
+        }
     }
 
     // Buttons section
@@ -249,6 +287,12 @@ function createTodoItem(text, category, priority, deadline, duration, id, timeLe
     checkbox.addEventListener("change", function () {
         if (checkbox.checked) {
             li.classList.add("completed");
+            // Stop timer if running when completed
+            if (activeTimers[id]) {
+                clearInterval(activeTimers[id]);
+                delete activeTimers[id];
+                li.dataset.timerEndsAt = "";
+            }
             moveWithAnimation(li, completedList);
         } else {
             li.classList.remove("completed");

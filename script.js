@@ -21,6 +21,7 @@ const priorityFilter = document.getElementById("priorityFilter");
 const logoutBtn = document.getElementById("logoutBtn");
 
 let activeTimers = {};
+let currentTasks = []; // Single Source of Truth
 
 // Logout functionality
 logoutBtn.addEventListener("click", () => {
@@ -66,38 +67,35 @@ function populateTimeDropdowns() {
 
 // Save tasks per user
 function saveTasks() {
-    let tasks = [];
-    document.querySelectorAll(".todo-item").forEach((li) => {
-        tasks.push({
-            id: li.dataset.id,
-            text: li.querySelector(".todo-text").innerText,
-            category: li.dataset.category,
-            priority: li.dataset.priority,
-            deadline: li.dataset.deadline,
-            duration: li.dataset.duration,
-            timeLeft: li.dataset.timeLeft,
-            timerEndsAt: li.dataset.timerEndsAt || null,
-            completed: li.classList.contains("completed"),
-        });
-    });
     const allUsersTasks = JSON.parse(localStorage.getItem("userTasks")) || {};
-    allUsersTasks[currentUser] = tasks;
+    allUsersTasks[currentUser] = currentTasks;
     localStorage.setItem("userTasks", JSON.stringify(allUsersTasks));
 }
 
 // Load tasks per user
 function loadTasks() {
     const allUsersTasks = JSON.parse(localStorage.getItem("userTasks")) || {};
-    const tasks = allUsersTasks[currentUser] || [];
+    currentTasks = allUsersTasks[currentUser] || [];
+    renderList(currentTasks);
+}
 
-    tasks.forEach((task) => {
+// Render the task list
+function renderList(tasksToRender) {
+    // Clear existing timers to prevent leaks
+    Object.values(activeTimers).forEach(clearInterval);
+    activeTimers = {};
+
+    activeList.innerHTML = "";
+    completedList.innerHTML = "";
+
+    tasksToRender.forEach((task) => {
         const li = createTodoItem(
             task.text,
             task.category,
             task.priority,
             task.deadline,
             task.duration || "0",
-            task.id || Date.now().toString(),
+            task.id,
             task.timeLeft,
             task.timerEndsAt
         );
@@ -129,6 +127,7 @@ function moveWithAnimation(item, targetList) {
         setTimeout(() => {
             item.classList.remove("task-enter", "task-enter-active");
         }, 250);
+        // Note: currentTasks is already updated before calling moveWithAnimation
         saveTasks();
     }, 250);
 }
@@ -209,9 +208,11 @@ function createTodoItem(text, category, priority, deadline, duration, id, timeLe
         function startTimerLogic() {
             if (activeTimers[id]) return;
 
-            // Calculate the absolute end time and save it
             if (!li.dataset.timerEndsAt || parseInt(li.dataset.timerEndsAt) <= Date.now()) {
                 li.dataset.timerEndsAt = Date.now() + (remaining * 1000);
+                // Update array
+                const task = currentTasks.find(t => t.id === id);
+                if (task) task.timerEndsAt = li.dataset.timerEndsAt;
                 saveTasks();
             }
 
@@ -221,6 +222,8 @@ function createTodoItem(text, category, priority, deadline, duration, id, timeLe
 
                 if (remaining > 0) {
                     li.dataset.timeLeft = remaining;
+                    const task = currentTasks.find(t => t.id === id);
+                    if (task) task.timeLeft = remaining;
                     updateDisplay();
                 } else {
                     remaining = 0;
@@ -228,6 +231,11 @@ function createTodoItem(text, category, priority, deadline, duration, id, timeLe
                     updateDisplay();
                     stopTimer();
                     li.dataset.timerEndsAt = "";
+                    const task = currentTasks.find(t => t.id === id);
+                    if (task) {
+                        task.timeLeft = 0;
+                        task.timerEndsAt = "";
+                    }
                     saveTasks();
                     sendNotification("Timer Finished!", text);
                     
@@ -245,8 +253,13 @@ function createTodoItem(text, category, priority, deadline, duration, id, timeLe
 
         pauseBtn.addEventListener("click", () => {
             stopTimer();
-            li.dataset.timerEndsAt = ""; // Clear so it doesn't auto-resume
+            li.dataset.timerEndsAt = "";
             li.dataset.timeLeft = remaining;
+            const task = currentTasks.find(t => t.id === id);
+            if (task) {
+                task.timerEndsAt = "";
+                task.timeLeft = remaining;
+            }
             saveTasks();
             startBtn.style.display = "inline-block";
             pauseBtn.style.display = "none";
@@ -257,6 +270,11 @@ function createTodoItem(text, category, priority, deadline, duration, id, timeLe
             remaining = parseInt(duration);
             li.dataset.timeLeft = remaining;
             li.dataset.timerEndsAt = "";
+            const task = currentTasks.find(t => t.id === id);
+            if (task) {
+                task.timeLeft = remaining;
+                task.timerEndsAt = "";
+            }
             updateDisplay();
             saveTasks();
 
@@ -265,7 +283,6 @@ function createTodoItem(text, category, priority, deadline, duration, id, timeLe
             resetBtn.style.display = "none";
         });
 
-        // Auto-resume logic
         if (timerEndsAt && parseInt(timerEndsAt) > Date.now()) {
             remaining = Math.floor((parseInt(timerEndsAt) - Date.now()) / 1000);
             startTimerLogic();
@@ -274,7 +291,6 @@ function createTodoItem(text, category, priority, deadline, duration, id, timeLe
             li.dataset.timeLeft = 0;
             li.dataset.timerEndsAt = "";
             updateDisplay();
-            // Don't save here to avoid unnecessary writes, wait for manual action or next save
         }
     }
 
@@ -285,13 +301,16 @@ function createTodoItem(text, category, priority, deadline, duration, id, timeLe
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.addEventListener("change", function () {
+        const task = currentTasks.find(t => t.id === id);
+        if (task) task.completed = checkbox.checked;
+
         if (checkbox.checked) {
             li.classList.add("completed");
-            // Stop timer if running when completed
             if (activeTimers[id]) {
                 clearInterval(activeTimers[id]);
                 delete activeTimers[id];
                 li.dataset.timerEndsAt = "";
+                if (task) task.timerEndsAt = "";
             }
             moveWithAnimation(li, completedList);
         } else {
@@ -304,11 +323,11 @@ function createTodoItem(text, category, priority, deadline, duration, id, timeLe
     deleteBtn.className = "delete-btn";
     deleteBtn.innerText = "Delete";
     deleteBtn.addEventListener("click", () => {
-        // Stop timer if running
         if (activeTimers[id]) {
             clearInterval(activeTimers[id]);
             delete activeTimers[id];
         }
+        currentTasks = currentTasks.filter(t => t.id !== id);
         li.remove();
         saveTasks();
     });
@@ -334,13 +353,30 @@ addBtn.addEventListener("click", () => {
     const minutes = parseInt(minutesInput.value) || 0;
     const seconds = parseInt(secondsInput.value) || 0;
     const duration = (hours * 3600 + minutes * 60 + seconds).toString();
+    const id = Date.now().toString();
 
-    const li = createTodoItem(
+    const newTask = {
+        id,
         text,
-        categoryInput.value,
-        priorityInput.value,
-        deadlineInput.value,
-        duration
+        category: categoryInput.value,
+        priority: priorityInput.value,
+        deadline: deadlineInput.value,
+        duration,
+        timeLeft: duration,
+        timerEndsAt: null,
+        completed: false
+    };
+
+    currentTasks.push(newTask);
+    
+    const li = createTodoItem(
+        newTask.text,
+        newTask.category,
+        newTask.priority,
+        newTask.deadline,
+        newTask.duration,
+        newTask.id,
+        newTask.timeLeft
     );
 
     activeList.appendChild(li);
@@ -377,23 +413,20 @@ setInterval(() => {
     document.querySelectorAll("#activeList .todo-item").forEach(checkDeadline);
 }, 30000);
 
-// Combined filter function
+// Optimized filter function using in-memory array
 function combinedFilter() {
     const searchTerm = searchInput.value.toLowerCase();
     const selectedCategory = categoryFilter.value;
     const selectedPriority = priorityFilter.value;
 
-    document.querySelectorAll(".todo-item").forEach(task => {
-        const taskText = task.querySelector(".todo-text").innerText.toLowerCase();
-        const taskCategory = task.dataset.category;
-        const taskPriority = task.dataset.priority;
-
-        const searchMatch = taskText.includes(searchTerm);
-        const categoryMatch = selectedCategory === "All" || taskCategory === selectedCategory;
-        const priorityMatch = selectedPriority === "All" || taskPriority === selectedPriority;
-
-        task.style.display = (searchMatch && categoryMatch && priorityMatch) ? "flex" : "none";
+    const filteredTasks = currentTasks.filter(task => {
+        const searchMatch = task.text.toLowerCase().includes(searchTerm);
+        const categoryMatch = selectedCategory === "All" || task.category === selectedCategory;
+        const priorityMatch = selectedPriority === "All" || task.priority === selectedPriority;
+        return searchMatch && categoryMatch && priorityMatch;
     });
+
+    renderList(filteredTasks);
 }
 
 // Load tasks and attach filter listeners
